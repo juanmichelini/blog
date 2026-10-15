@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "node build.mjs",
+  "outputDirectory": "dist",
+  "trailingSlash": true,
+  "rewrites": [
+    { "source": "/feed/", "destination": "/feed.xml" }
+  ],
+  "redirects": [
+    { "source": "/wp-sitemap.xml", "destination": "/sitemap.xml", "permanent": true },
+    { "source": "/author/admin/", "destination": "/", "permanent": true },
+    { "source": "/blog/", "destination": "/", "permanent": true },
+    { "source": "/home/", "destination": "/", "permanent": true },
+    { "source": "/sample-page/", "destination": "/", "permanent": true }
+  ]
+}
