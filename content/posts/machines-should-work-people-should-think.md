@@ -32,7 +32,7 @@ It is great. The overall vibe is that IBM will provide a machine for paperwork. 
 
 Let’s continue. Half a century later, what is IBM doing?
 
-<iframe loading="lazy" title="IBM: Smart loves problems" src="https://www.youtube.com/embed/videoseries?list=PLaFe0BJiho2raVtgQUZMc58OTzhNwMVsS" style="aspect-ratio:16/9" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe loading="lazy" title="IBM &quot;Icelandic Road &amp; Coastal Administration&quot;" src="https://player.vimeo.com/video/410709634" style="aspect-ratio:16/9" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>
 
 How has time changed things. It is difficult to see where machines end and people begin. The thinking seems to be shared between both, and people are called smart for working with smart machines. They are integrated.
 
