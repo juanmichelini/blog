@@ -45,17 +45,17 @@
   }
 
   const galaxies = [
-    { side: "left",  y: 0.27, scale: 1.0,  cfg: { seed: 11, count: 1800, arms: 2, twist: 5.5, tilt: -0.5, incl: 0.62, speed: 0.07 } },
+    { side: "left",  y: 0.27, scale: 1.0,  cfg: { seed: 11, count: 1800, arms: 2, twist: 5.5, tilt: -0.5, incl: 0.62, speed: -0.07 } },
     { side: "right", y: 0.66, scale: 1.0,  cfg: { seed: 23, count: 1800, arms: 3, twist: 4.5, tilt: 0.4,  incl: 0.55, speed: -0.06 } },
     { side: "left",  y: 0.8,  scale: 0.55, cfg: { seed: 37, count: 800, arms: 2, twist: 6.0, tilt: 0.9,  incl: 0.7,  speed: -0.09 } },
-    { side: "right", y: 0.14, scale: 0.5,  cfg: { seed: 41, count: 700, arms: 2, twist: 5.0, tilt: -0.9, incl: 0.5,  speed: 0.08 } },
+    { side: "right", y: 0.14, scale: 0.5,  cfg: { seed: 41, count: 700, arms: 2, twist: 5.0, tilt: -0.9, incl: 0.5,  speed: -0.08 } },
   ].map((g) => Object.assign(makeGalaxy(g.cfg), { side: g.side, y: g.y, scale: g.scale }));
 
   // Two galaxies that sit behind the text column (phone and desktop alike).
   // Same sky as before on phones; on wide screens they are mirrored so they don't echo the margin galaxies.
   const under = [
-    makeGalaxy({ seed: 11, count: 1800, arms: 2, twist: 5.5, tilt: -0.5, incl: 0.62, speed: 0.07 }),
-    makeGalaxy({ seed: 41, count: 700, arms: 2, twist: 5.0, tilt: -0.9, incl: 0.5, speed: 0.08 }),
+    makeGalaxy({ seed: 11, count: 1800, arms: 2, twist: 5.5, tilt: -0.5, incl: 0.62, speed: -0.07 }),
+    makeGalaxy({ seed: 41, count: 700, arms: 2, twist: 5.0, tilt: -0.9, incl: 0.5, speed: -0.08 }),
   ];
   const everyGalaxy = galaxies.concat(under);
   const underBase = under.map((g) => ({ tilt: g.tilt, speed: g.speed }));
@@ -70,7 +70,8 @@
 
   const darkScheme = matchMedia("(prefers-color-scheme: dark)");
   // Galaxies behind the text column are dimmed so reading stays easy. Dots are white on black;
-  // on a light page they switch to royal blue so they show at all on white.
+  // on a light page they switch to black so they show on the white column.
+  // Spin: arms trail when speed is negative (angle grows with radius), so keep all speeds negative.
   let W = 0, H = 0, dpr = 1, marginL = 0, marginR = 0, behind = false, running = false, raf = 0;
   let colX = 0, colW = 0;
   const UNDER_DIM = 0.55;
@@ -105,7 +106,7 @@
       g.cy = i === 0 ? H * 0.4 : H * 0.86;
       g.R = i === 0 ? Math.min(colW * 0.62, H * 0.3) : colW * 0.28;
       g.tilt = behind ? underBase[i].tilt : -underBase[i].tilt;
-      g.speed = behind ? underBase[i].speed : -underBase[i].speed;
+      g.speed = underBase[i].speed;
     });
 
     draw(0); // paint before the column goes transparent, so there is no flash
@@ -119,7 +120,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
     const light = !darkScheme.matches;
-    const underInk = light ? "47,85,212" : "255,255,255";
+    const underInk = light ? "0,0,0" : "255,255,255";
 
     // In light mode the column is white; the column background is transparent so the canvas paints it.
     if (light) {
