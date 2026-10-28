@@ -200,10 +200,8 @@ for (const p of posts) {
       path: `/${p.slug}/`,
       type: "article",
       body: `<article>
-<div class="post-head">
 <h1>${esc(p.title)}</h1>
 <p class="meta"><time datetime="${p.date}">${fmtDate(p.date)}</time></p>
-</div>
 <div class="content">
 ${p.html}
 </div>
