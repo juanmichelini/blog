@@ -67,14 +67,22 @@ header { margin-bottom: 3rem; padding-bottom: 1.25rem; border-bottom: 2px solid 
 h1, h2, h3 { color: var(--title); width: fit-content; max-width: 100%; }
 
 /* Titles light up international orange on hover / click / keyboard focus */
-.site-title, .posts a, h1, h2, h3 { transition: none; }
 .site-title:hover, .site-title:active, .site-title:focus-visible,
-.posts a:hover, .posts a:active, .posts a:focus-visible,
-h1:hover, h1:active, h2:hover, h2:active, h3:hover, h3:active {
+h2:hover, h2:active, h3:hover, h3:active {
   background: var(--orange);
   color: #000;
   outline: none;
   text-decoration: none;
+}
+
+/* Whole subsection (title + date) lights up: post rows on the home page, title block on a post */
+.posts li:hover, .posts li:active, .posts li:has(a:focus-visible),
+.post-head:hover, .post-head:active {
+  background: var(--orange);
+}
+.posts li:hover *, .posts li:active *, .posts li:has(a:focus-visible) *,
+.post-head:hover *, .post-head:active * {
+  color: #000;
 }
 h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 0.25rem; }
 h2 { font-size: 1.35rem; line-height: 1.3; margin: 2.2rem 0 0.5rem; }
@@ -82,6 +90,9 @@ h3 { font-size: 1.15rem; margin: 1.8rem 0 0.4rem; }
 
 .meta, time { color: var(--muted); font-size: 0.95rem; }
 .meta { margin: 0 0 2rem; }
+.post-head { margin: 0 -0.75rem 2rem; padding: 0.5rem 0.75rem; }
+.post-head .meta { margin: 0; }
+.post-head h1 { margin: 0 0 0.25rem; }
 
 .posts { list-style: none; margin: 0; padding: 0; }
 .posts li {
@@ -90,11 +101,15 @@ h3 { font-size: 1.15rem; margin: 1.8rem 0 0.4rem; }
   justify-content: space-between;
   align-items: baseline;
   gap: 0.25rem 1rem;
-  padding: 0.9rem 0;
+  position: relative;
+  padding: 0.9rem 0.75rem;
+  margin: 0 -0.75rem;
   border-bottom: 1px solid var(--rule);
 }
 .posts li:first-child { border-top: 1px solid var(--rule); }
-.posts a { color: var(--title); font-size: 1.25rem; font-weight: 700; text-decoration: none; padding: 0 0.3em; margin-left: -0.3em; }
+.posts a { color: var(--title); font-size: 1.25rem; font-weight: 700; text-decoration: none; }
+.posts a:focus-visible { outline: none; }
+.posts a::after { content: ""; position: absolute; inset: 0; } /* whole row is the click target */
 .content p { margin: 0 0 1.25rem; }
 .content img, .content iframe { max-width: 100%; display: block; margin: 1.5rem auto; }
 .content img { height: auto; }
