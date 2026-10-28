@@ -1,6 +1,6 @@
 // Slowly swirling white-dot galaxies in the black margins beside the main column.
-// Zero dependencies. On wide screens they sit in the margins beside the column;
-// on phones, where there are no margins, one sits behind the text.
+// Zero dependencies. Galaxies sit in the margins beside the column on wide screens,
+// and a big one (plus a small one) sits behind the text on every screen size.
 // Respects prefers-reduced-motion (draws one still frame instead of animating).
 (() => {
   const canvas = document.createElement("canvas");
@@ -51,6 +51,15 @@
     { side: "right", y: 0.14, scale: 0.5,  cfg: { seed: 41, count: 700, arms: 2, twist: 5.0, tilt: -0.9, incl: 0.5,  speed: 0.08 } },
   ].map((g) => Object.assign(makeGalaxy(g.cfg), { side: g.side, y: g.y, scale: g.scale }));
 
+  // Two galaxies that sit behind the text column (phone and desktop alike).
+  // Same sky as before on phones; on wide screens they are mirrored so they don't echo the margin galaxies.
+  const under = [
+    makeGalaxy({ seed: 11, count: 1800, arms: 2, twist: 5.5, tilt: -0.5, incl: 0.62, speed: 0.07 }),
+    makeGalaxy({ seed: 41, count: 700, arms: 2, twist: 5.0, tilt: -0.9, incl: 0.5, speed: 0.08 }),
+  ];
+  const everyGalaxy = galaxies.concat(under);
+  const underBase = under.map((g) => ({ tilt: g.tilt, speed: g.speed }));
+
   // A sprinkle of lone background stars.
   const sky = (() => {
     const r = rng(99);
@@ -60,10 +69,11 @@
   })();
 
   const darkScheme = matchMedia("(prefers-color-scheme: dark)");
-  // Where there are no margins (phones), one galaxy sits behind the text instead.
-  // Dots are white on black; on a light page they switch to royal blue so they show at all.
+  // Galaxies behind the text column are dimmed so reading stays easy. Dots are white on black;
+  // on a light page they switch to royal blue so they show at all on white.
   let W = 0, H = 0, dpr = 1, marginL = 0, marginR = 0, behind = false, running = false, raf = 0;
-  const PHONE_DIM = 0.55; // keep text readable over the dots
+  let colX = 0, colW = 0;
+  const UNDER_DIM = 0.55;
 
   function layout() {
     W = innerWidth;
@@ -75,42 +85,62 @@
     const rect = wrap ? wrap.getBoundingClientRect() : { left: 0, right: W };
     marginL = rect.left;
     marginR = W - rect.right;
-    behind = marginL < MIN_MARGIN && marginR < MIN_MARGIN;
-    document.documentElement.classList.toggle("galaxy-bg", behind);
-    galaxies.forEach((g, i) => {
-      if (behind) {
-        // a big galaxy mid-screen and a small one in the lower corner, under everything
-        g.visible = i === 0 || i === 3;
-        g.cx = i === 0 ? W / 2 : W * 0.82;
-        g.cy = i === 0 ? H * 0.4 : H * 0.86;
-        g.R = i === 0 ? Math.min(W * 0.62, H * 0.3) : W * 0.28;
-        return;
-      }
+    colX = rect.left;
+    colW = rect.right - rect.left;
+    behind = marginL < MIN_MARGIN && marginR < MIN_MARGIN; // phone-width: no usable margins
+
+    // Margin galaxies (only where there is room).
+    for (const g of galaxies) {
       const m = g.side === "left" ? marginL : marginR;
       g.cx = g.side === "left" ? m / 2 : W - m / 2;
       g.cy = H * g.y;
       g.R = Math.min(m * 0.47, H * 0.23) * g.scale;
       g.visible = m >= MIN_MARGIN;
+    }
+
+    // Galaxies behind the column: a big one mid-screen, a small one low on the right.
+    under.forEach((g, i) => {
+      g.visible = true;
+      g.cx = i === 0 ? colX + colW / 2 : colX + colW * 0.82;
+      g.cy = i === 0 ? H * 0.4 : H * 0.86;
+      g.R = i === 0 ? Math.min(colW * 0.62, H * 0.3) : colW * 0.28;
+      g.tilt = behind ? underBase[i].tilt : -underBase[i].tilt;
+      g.speed = behind ? underBase[i].speed : -underBase[i].speed;
     });
-    if (galaxies.some((g) => g.visible)) start(); else stop();
+
+    draw(0); // paint before the column goes transparent, so there is no flash
+    const root = document.documentElement;
+    root.classList.add("galaxy-bg");
+    root.classList.toggle("galaxy-behind", behind);
+    start();
   }
 
   function draw(t) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    const ink = behind && !darkScheme.matches ? "47,85,212" : "255,255,255";
-    const dim = behind ? PHONE_DIM : 1;
-    ctx.fillStyle = `rgb(${ink})`;
+    const light = !darkScheme.matches;
+    const underInk = light ? "47,85,212" : "255,255,255";
+
+    // In light mode the column is white; the column background is transparent so the canvas paints it.
+    if (light) {
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(colX, 0, colW, H);
+    }
 
     for (const s of sky) {
       const x = s.x * W;
-      if (!behind && x > marginL && x < W - marginR) continue; // hidden behind the column anyway
-      ctx.globalAlpha = s.alpha * dim * (0.7 + 0.3 * Math.sin(t * s.tw + s.ph));
+      const inCol = x >= colX && x <= colX + colW;
+      ctx.fillStyle = `rgb(${inCol ? underInk : "255,255,255"})`;
+      ctx.globalAlpha = s.alpha * (inCol ? UNDER_DIM : 1) * (0.7 + 0.3 * Math.sin(t * s.tw + s.ph));
       ctx.fillRect(x, s.y * H, s.size, s.size);
     }
 
-    for (const g of galaxies) {
+    for (const g of everyGalaxy) {
       if (!g.visible) continue;
+      const isUnder = under.includes(g);
+      const ink = isUnder ? underInk : "255,255,255";
+      const dim = isUnder ? UNDER_DIM : 1;
 
       // soft glow at the core
       const glow = ctx.createRadialGradient(g.cx, g.cy, 0, g.cx, g.cy, g.R * 0.3);
