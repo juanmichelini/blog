@@ -1,19 +1,27 @@
 :root {
-  --bg: #fbfaf7;
-  --fg: #1c1b19;
-  --muted: #706b62;
-  --rule: #e4e0d6;
-  --link: #9a3412;
-  --quote: #f2efe7;
+  /* Astronaut palette: white / black base, royal blue + international orange accents */
+  --bg: #ffffff;
+  --fg: #000000;
+  --muted: #595959;
+  --blue: #2f55d4;       /* royal blue, deepened for text contrast on white (6.2:1) */
+  --orange: #ff4f00;     /* international (aerospace) orange; accents only on white (3.3:1) */
+  --orange-text: #c43d00; /* darker orange for small text on white (5.2:1) */
+  --link: var(--blue);
+  --rule: #d6dcf2;       /* blue-tinted hairline */
+  --quote: #eef2fd;      /* faint blue wash */
+  --selection: #ffd9c7;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #151412;
-    --fg: #e8e4db;
-    --muted: #9a958a;
-    --rule: #2e2c28;
-    --link: #f0a070;
-    --quote: #1d1b18;
+    --bg: #000000;
+    --fg: #ffffff;
+    --muted: #a3a3a3;
+    --blue: #7b95f5;     /* royal blue lifted for text on black (7.5:1) */
+    --orange: #ff4f00;   /* 6.4:1 on black */
+    --orange-text: #ff4f00;
+    --rule: #1b2552;
+    --quote: #0a0f24;
+    --selection: #5c2200;
   }
 }
 
@@ -26,7 +34,17 @@ body {
   background: var(--bg);
   color: var(--fg);
   font: 1.125rem/1.7 Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  border-top: 6px solid var(--blue);
 }
+body::before { /* orange mission stripe under the blue bar */
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--orange);
+}
+
+::selection { background: var(--selection); color: var(--fg); }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
 
 .wrap {
   max-width: 40rem;
@@ -35,9 +53,9 @@ body {
 }
 
 a { color: var(--link); text-underline-offset: 0.2em; }
-a:hover { text-decoration-thickness: 2px; }
+a:hover { text-decoration-thickness: 2px; text-decoration-color: var(--orange); }
 
-header { margin-bottom: 3rem; }
+header { margin-bottom: 3rem; padding-bottom: 1.25rem; border-bottom: 2px solid var(--blue); }
 .site-title {
   display: block;
   color: var(--fg);
@@ -67,8 +85,7 @@ h3 { font-size: 1.15rem; margin: 1.8rem 0 0.4rem; }
 }
 .posts li:first-child { border-top: 1px solid var(--rule); }
 .posts a { font-size: 1.25rem; font-weight: 600; text-decoration: none; }
-.posts a:hover { text-decoration: underline; }
-
+.posts a:hover { text-decoration: underline; text-decoration-color: var(--orange); }
 .content p { margin: 0 0 1.25rem; }
 .content img, .content iframe { max-width: 100%; display: block; margin: 1.5rem auto; }
 .content img { height: auto; }
@@ -79,24 +96,24 @@ blockquote {
   margin: 1.5rem 0;
   padding: 0.1rem 1.25rem;
   background: var(--quote);
-  border-left: 3px solid var(--link);
+  border-left: 4px solid var(--orange);
   font-style: italic;
 }
 blockquote p { margin: 0.6rem 0; }
 
 pre, code { font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace; }
-pre { overflow-x: auto; padding: 1rem; background: var(--quote); border-radius: 4px; }
+pre { overflow-x: auto; padding: 1rem; background: var(--quote); border-radius: 4px; border-left: 4px solid var(--blue); }
 
 .back { margin-top: 3rem; font-size: 0.95rem; }
 
 footer {
   margin-top: 4rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--rule);
+  border-top: 2px solid var(--blue);
   color: var(--muted);
   font-size: 0.95rem;
 }
-footer h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 0.3rem; }
+footer h2 { color: var(--orange-text); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 0.3rem; }
 footer p { margin: 0; }
 
 @media (max-width: 480px) {
