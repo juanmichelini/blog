@@ -6,8 +6,8 @@
   --blue: #2f55d4;       /* royal blue, deepened for text contrast on white (6.2:1) */
   --orange: #ff4f00;     /* international (aerospace) orange; accents only on white (3.3:1) */
   --orange-text: #c43d00; /* darker orange for small text on white (5.2:1) */
-  --title: #e84a00;      /* orange for headings: large text, 3.9:1 on white */
-  --margin: #4169e1;     /* royal blue outside the main column */
+  --title: var(--blue);  /* titles are royal blue */
+  --margin: #000000;     /* black margins outside the main column, both modes */
   --link: var(--blue);
   --rule: #d6dcf2;       /* blue-tinted hairline */
   --quote: #eef2fd;      /* faint blue wash */
@@ -21,8 +21,6 @@
     --blue: #7b95f5;     /* royal blue lifted for text on black (7.5:1) */
     --orange: #ff4f00;   /* 6.4:1 on black */
     --orange-text: #ff4f00;
-    --title: #ff4f00;
-    --margin: #2c4fc9;   /* slightly deeper royal blue beside the black column */
     --rule: #1b2552;
     --quote: #0a0f24;
     --selection: #5c2200;
@@ -62,10 +60,22 @@ header { margin-bottom: 3rem; padding-bottom: 1.25rem; border-bottom: 2px solid 
   font-weight: 700;
   line-height: 1.25;
   text-decoration: none;
+  width: fit-content;
 }
 .tagline { color: var(--muted); font-style: italic; }
 
-h1, h2, h3 { color: var(--title); }
+h1, h2, h3 { color: var(--title); width: fit-content; max-width: 100%; }
+
+/* Titles light up international orange on hover / click / keyboard focus */
+.site-title, .posts a, h1, h2, h3 { transition: none; }
+.site-title:hover, .site-title:active, .site-title:focus-visible,
+.posts a:hover, .posts a:active, .posts a:focus-visible,
+h1:hover, h1:active, h2:hover, h2:active, h3:hover, h3:active {
+  background: var(--orange);
+  color: #000;
+  outline: none;
+  text-decoration: none;
+}
 h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 0.25rem; }
 h2 { font-size: 1.35rem; line-height: 1.3; margin: 2.2rem 0 0.5rem; }
 h3 { font-size: 1.15rem; margin: 1.8rem 0 0.4rem; }
@@ -84,8 +94,7 @@ h3 { font-size: 1.15rem; margin: 1.8rem 0 0.4rem; }
   border-bottom: 1px solid var(--rule);
 }
 .posts li:first-child { border-top: 1px solid var(--rule); }
-.posts a { color: var(--title); font-size: 1.25rem; font-weight: 700; text-decoration: none; }
-.posts a:hover { text-decoration: underline; text-decoration-color: var(--orange); }
+.posts a { color: var(--title); font-size: 1.25rem; font-weight: 700; text-decoration: none; padding: 0 0.3em; margin-left: -0.3em; }
 .content p { margin: 0 0 1.25rem; }
 .content img, .content iframe { max-width: 100%; display: block; margin: 1.5rem auto; }
 .content img { height: auto; }
