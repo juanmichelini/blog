@@ -6,7 +6,7 @@ import { join, extname } from "node:path";
 const DIST = new URL("./dist/", import.meta.url).pathname;
 const PORT = process.env.PORT || 3000;
 const types = {
-  ".html": "text/html; charset=utf-8", ".css": "text/css", ".xml": "application/xml",
+  ".html": "text/html; charset=utf-8", ".css": "text/css", ".js": "text/javascript", ".xml": "application/xml",
   ".txt": "text/plain", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml",
 };
 

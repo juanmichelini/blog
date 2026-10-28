@@ -142,6 +142,7 @@ ${hasFavicon ? '<link rel="icon" href="/favicon.png">' : ""}
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
 <link rel="stylesheet" href="/style.css">
+<script src="/galaxies.js" defer></script>
 </head>
 <body>
 <div class="wrap">
