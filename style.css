@@ -52,6 +52,10 @@ body {
   background: var(--bg);
 }
 
+/* No margins (phones): galaxies.js adds .galaxy-bg and a galaxy shows through the column */
+.galaxy-bg body { background: var(--bg); }
+.galaxy-bg .wrap { background: transparent; }
+
 /* Swirling galaxies live in the black margins; see public/galaxies.js */
 .galaxies {
   position: fixed;

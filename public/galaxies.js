@@ -1,5 +1,6 @@
 // Slowly swirling white-dot galaxies in the black margins beside the main column.
-// Zero dependencies. Hidden behind the column, so only visible on wider screens.
+// Zero dependencies. On wide screens they sit in the margins beside the column;
+// on phones, where there are no margins, one sits behind the text.
 // Respects prefers-reduced-motion (draws one still frame instead of animating).
 (() => {
   const canvas = document.createElement("canvas");
@@ -58,7 +59,11 @@
     }));
   })();
 
-  let W = 0, H = 0, dpr = 1, marginL = 0, marginR = 0, running = false, raf = 0;
+  const darkScheme = matchMedia("(prefers-color-scheme: dark)");
+  // Where there are no margins (phones), one galaxy sits behind the text instead.
+  // Dots are white on black; on a light page they switch to royal blue so they show at all.
+  let W = 0, H = 0, dpr = 1, marginL = 0, marginR = 0, behind = false, running = false, raf = 0;
+  const PHONE_DIM = 0.55; // keep text readable over the dots
 
   function layout() {
     W = innerWidth;
@@ -70,25 +75,37 @@
     const rect = wrap ? wrap.getBoundingClientRect() : { left: 0, right: W };
     marginL = rect.left;
     marginR = W - rect.right;
-    for (const g of galaxies) {
+    behind = marginL < MIN_MARGIN && marginR < MIN_MARGIN;
+    document.documentElement.classList.toggle("galaxy-bg", behind);
+    galaxies.forEach((g, i) => {
+      if (behind) {
+        // a big galaxy mid-screen and a small one in the lower corner, under everything
+        g.visible = i === 0 || i === 3;
+        g.cx = i === 0 ? W / 2 : W * 0.82;
+        g.cy = i === 0 ? H * 0.4 : H * 0.86;
+        g.R = i === 0 ? Math.min(W * 0.62, H * 0.3) : W * 0.28;
+        return;
+      }
       const m = g.side === "left" ? marginL : marginR;
       g.cx = g.side === "left" ? m / 2 : W - m / 2;
       g.cy = H * g.y;
       g.R = Math.min(m * 0.47, H * 0.23) * g.scale;
       g.visible = m >= MIN_MARGIN;
-    }
+    });
     if (galaxies.some((g) => g.visible)) start(); else stop();
   }
 
   function draw(t) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = "#fff";
+    const ink = behind && !darkScheme.matches ? "47,85,212" : "255,255,255";
+    const dim = behind ? PHONE_DIM : 1;
+    ctx.fillStyle = `rgb(${ink})`;
 
     for (const s of sky) {
       const x = s.x * W;
-      if (x > marginL && x < W - marginR) continue; // hidden behind the column anyway
-      ctx.globalAlpha = s.alpha * (0.7 + 0.3 * Math.sin(t * s.tw + s.ph));
+      if (!behind && x > marginL && x < W - marginR) continue; // hidden behind the column anyway
+      ctx.globalAlpha = s.alpha * dim * (0.7 + 0.3 * Math.sin(t * s.tw + s.ph));
       ctx.fillRect(x, s.y * H, s.size, s.size);
     }
 
@@ -97,12 +114,12 @@
 
       // soft glow at the core
       const glow = ctx.createRadialGradient(g.cx, g.cy, 0, g.cx, g.cy, g.R * 0.3);
-      glow.addColorStop(0, "rgba(255,255,255,0.12)");
-      glow.addColorStop(1, "rgba(255,255,255,0)");
+      glow.addColorStop(0, `rgba(${ink},${0.12 * dim})`);
+      glow.addColorStop(1, `rgba(${ink},0)`);
       ctx.globalAlpha = 1;
       ctx.fillStyle = glow;
       ctx.fillRect(g.cx - g.R, g.cy - g.R, g.R * 2, g.R * 2);
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = `rgb(${ink})`;
 
       const spin = t * g.speed;
       const cosT = Math.cos(g.tilt), sinT = Math.sin(g.tilt);
@@ -110,7 +127,7 @@
         const a = s.theta + spin;
         const x = Math.cos(a) * s.rad * g.R;
         const y = Math.sin(a) * s.rad * g.R * g.incl;
-        ctx.globalAlpha = s.alpha * (0.75 + 0.25 * Math.sin(t * s.tw + s.ph));
+        ctx.globalAlpha = s.alpha * dim * (0.75 + 0.25 * Math.sin(t * s.tw + s.ph));
         ctx.fillRect(g.cx + x * cosT - y * sinT, g.cy + x * sinT + y * cosT, s.size, s.size);
       }
     }
@@ -146,5 +163,6 @@
     resizeTimer = setTimeout(layout, 100);
   });
   reduceMotion.addEventListener("change", () => { running = false; layout(); });
+  darkScheme.addEventListener("change", () => { if (reduceMotion.matches) draw(0); });
   layout();
 })();
