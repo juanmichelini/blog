@@ -28,4 +28,4 @@ npm start      # builds and serves http://localhost:3000
 Import the repo. `vercel.json` already sets the build command (`node build.mjs`) and output (`dist`); no framework preset needed.
 It also keeps the old WordPress feed (`/feed/`) and redirects old WP URLs.
 
-Site title, tagline and About text live in `site.json`.
+Site title and tagline (the line under your name) live in `site.json`.

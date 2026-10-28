@@ -152,10 +152,6 @@ ${hasFavicon ? '<link rel="icon" href="/favicon.png">' : ""}
 <main>
 ${body}
 </main>
-<footer>
-<h2>About</h2>
-<p>${inline(site.about)}</p>
-</footer>
 </div>
 </body>
 </html>
