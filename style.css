@@ -50,7 +50,7 @@ body {
 }
 
 a { color: var(--link); text-underline-offset: 0.2em; }
-a:hover { text-decoration-thickness: 2px; text-decoration-color: var(--orange); }
+a:hover { text-decoration-thickness: 2px; }
 
 header { margin-bottom: 3rem; padding-bottom: 1.25rem; border-bottom: 2px solid var(--blue); }
 .site-title {
@@ -62,7 +62,6 @@ header { margin-bottom: 3rem; padding-bottom: 1.25rem; border-bottom: 2px solid 
   text-decoration: none;
   width: fit-content;
 }
-.site-title:hover { text-decoration: underline; text-decoration-color: var(--orange); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
 .tagline { color: var(--muted); font-style: italic; }
 
 h1, h2, h3 { color: var(--title); }
@@ -86,7 +85,7 @@ h3 { font-size: 1.15rem; margin: 1.8rem 0 0.4rem; }
 }
 .posts li:first-child { border-top: 1px solid var(--rule); }
 .posts a { color: var(--title); font-size: 1.25rem; font-weight: 700; text-decoration: none; }
-.posts a:hover { text-decoration: underline; text-decoration-color: var(--orange); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+.posts a:hover { text-decoration: underline; }
 .content p { margin: 0 0 1.25rem; }
 .content img, .content iframe { max-width: 100%; display: block; margin: 1.5rem auto; }
 .content img { height: auto; }
