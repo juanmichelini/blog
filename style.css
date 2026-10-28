@@ -18,7 +18,8 @@
     --bg: #000000;
     --fg: #ffffff;
     --muted: #a3a3a3;
-    --blue: #7b95f5;     /* royal blue lifted for text on black (7.5:1) */
+    --blue: #5078f0;     /* richer royal blue for links on black (5.3:1) */
+    --title: #4169e1;    /* true royal blue for large titles on black (4.3:1, passes for large text) */
     --orange: #ff4f00;   /* 6.4:1 on black */
     --orange-text: #ff4f00;
     --rule: #1b2552;
